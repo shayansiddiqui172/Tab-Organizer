@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!-- Divider Page - Version 1.0.0 -->
+<!-- Beautiful divider page with animated gradients and instructions -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>───</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Inter", system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: #ffffff;
+      padding: 40px;
+      text-align: center;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 800px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .divider-icon {
+      font-size: 48px;
+      margin-bottom: 32px;
+      opacity: 0.9;
+    }
+
+    .instructions {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .instructions h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      opacity: 0.95;
+    }
+
+    .instructions p {
+      font-size: 16px;
+      line-height: 1.8;
+      opacity: 0.9;
+      margin-bottom: 12px;
+    }
+
+    .tip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 12px 20px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 16px;
+    }
+
+    .divider-line {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      margin: 40px 0;
+    }
+
+    /* Alternative gradient themes (randomly applied) */
+    body.theme-sunset {
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    body.theme-ocean {
+      background: linear-gradient(135deg, #2e3192 0%, #1bffff 100%);
+    }
+
+    body.theme-forest {
+      background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+    }
+
+    body.theme-cosmic {
+      background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+    }
+
+    body.theme-fire {
+      background: linear-gradient(135deg, #f953c6 0%, #b91d73 100%);
+    }
+
+    body.theme-mint {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="divider-icon">─────</div>
+    
+    <div class="divider-line"></div>
+
+    <div class="instructions">
+      <h2>▸ Divider Tab Instructions</h2>
+      <p>This tab acts as a visual separator between your tab groups.</p>
+      <p><strong>Keep it collapsed</strong> to maintain the divider appearance in your tab bar.</p>
+      <p>You can right-click the group to change its color or rename it.</p>
+      
+      <div class="tip">
+        • Tip: Create multiple dividers to organize different sections
+      </div>
+    </div>
+  </div>
+
+  <script src="divider.js"></script>
+</body>
+</html>

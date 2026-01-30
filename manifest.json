@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Tab-it",
+  "short_name": "Tab-it",
+  "version": "1.0.0",
+  "author": "Shayan Siddiqui",
+  "description": "Organize 100+ tabs instantly. Smart grouping, session management, crash recovery. Stay focused and clutter-free.",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "storage",
+    "commands",
+    "notifications"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Tab-it",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["divider/divider.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "undo-last-action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Z",
+        "mac": "Command+Shift+Z"
+      },
+      "description": "Undo last grouping action"
+    }
+  }
+}
+

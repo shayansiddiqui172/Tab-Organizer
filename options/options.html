@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Tab Organizer Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="settings-container">
+    
+    <header class="settings-header">
+      <button class="back-btn" id="back-btn">← Back</button>
+      <h1>Settings</h1>
+    </header>
+
+    <div class="settings-content">
+
+      <!-- Auto-Save Section -->
+      <section class="settings-section">
+        <h2>💾 Auto-Save</h2>
+        <div class="setting-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="auto-save-enabled">
+            <span>Automatically save sessions every</span>
+            <select id="auto-save-interval" class="inline-select">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="60">60</option>
+            </select>
+            <span>minutes</span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="crash-recovery-enabled">
+            <span>Auto-save before closing window (crash recovery)</span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">
+            <span>Keep last</span>
+            <select id="max-recovery-sessions" class="inline-select">
+              <option value="1">1</option>
+              <option value="3">3</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+            </select>
+            <span>recovery sessions</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Grouping Behavior Section -->
+      <section class="settings-section">
+        <h2>📊 Grouping Behavior</h2>
+        <div class="setting-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="auto-collapse-groups">
+            <span>Automatically collapse groups after creation</span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="show-notifications">
+            <span>Show notifications after grouping</span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="skip-single-tab-groups">
+            <span>Skip creating groups with only 1 tab</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Keyboard Shortcuts Section -->
+      <section class="settings-section">
+        <h2>⌨️ Keyboard Shortcuts</h2>
+        <div class="shortcuts-list">
+          <div class="shortcut-item">
+            <span class="shortcut-label">Undo Last Action</span>
+            <span class="shortcut-keys">
+              <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd>
+            </span>
+          </div>
+        </div>
+        <p class="hint-text">Chrome limits extensions to 4 keyboard shortcuts</p>
+        <button class="secondary-btn" id="customize-shortcuts-btn">
+          Customize in Chrome Settings →
+        </button>
+      </section>
+
+      <!-- Storage Section -->
+      <section class="settings-section">
+        <h2>💾 Storage & Data</h2>
+        <div class="storage-info">
+          <div class="storage-bar-container">
+            <div class="storage-bar" id="storage-bar"></div>
+          </div>
+          <p class="storage-text" id="storage-text">Storage used: 0 MB / 10 MB</p>
+          <p class="storage-text" id="sessions-text">Saved sessions: 0 / 50</p>
+        </div>
+        <div class="button-group">
+          <button class="secondary-btn" id="export-sessions-btn">Export All Sessions</button>
+          <button class="secondary-btn" id="import-sessions-btn">Import Sessions</button>
+          <button class="danger-btn" id="clear-old-sessions-btn">Clear Old Sessions</button>
+        </div>
+      </section>
+
+      <!-- Appearance Section -->
+      <section class="settings-section">
+        <h2>🎨 Appearance</h2>
+        <div class="setting-item">
+          <label class="setting-label">Theme:</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="theme" value="auto" id="theme-auto">
+              <span>Auto (System)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="theme" value="light" id="theme-light">
+              <span>Light</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="theme" value="dark" id="theme-dark">
+              <span>Dark</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section class="settings-section">
+        <h2>ℹ️ About</h2>
+        <p class="about-text">Tab Organizer v1.0</p>
+        <p class="about-text">Intelligent tab management for Chrome</p>
+        <div class="button-group">
+          <button class="secondary-btn" id="give-feedback-btn">Give Feedback</button>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="settings-footer">
+      <button class="primary-btn" id="save-settings-btn">Save Settings</button>
+    </footer>
+
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

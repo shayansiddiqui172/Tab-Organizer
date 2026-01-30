@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Organizer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="title">Tab Organizer</h1>
+      <div class="header-meta">
+        <span class="tab-count" id="tabCount">0 tabs</span>
+        <button class="icon-button settings-icon" id="settingsBtn" title="Settings">
+          <span class="settings-icon-symbol">⚙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Welcome Card (shown on first use) -->
+    <div class="welcome-card" id="welcomeCard">
+      <div class="welcome-content">
+        <h2>Welcome to Tab Organizer!</h2>
+        <p class="welcome-description">
+          Drowning in tabs? Tab Organizer instantly groups your tabs by domain or type, so you can find what you need in seconds. Save sessions for later and keep your browser clutter-free.
+        </p>
+        <div class="welcome-instructions">
+          <h3>How to use:</h3>
+          <ul>
+            <li><strong>Group by Type:</strong> Smart categorization (social, work, shopping, etc.)</li>
+            <li><strong>Group by Domain:</strong> Automatically organize tabs by their website</li>
+            <li><strong>New Divider:</strong> Add visual separators (keep them collapsed)</li>
+            <li><strong>Save Sessions:</strong> Save your current tab setup and restore later</li>
+            <li><strong>Auto-recovery:</strong> Sessions are automatically saved when windows close</li>
+          </ul>
+        </div>
+        <button class="primary-button" id="gotItBtn">Got it!</button>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions-container">
+      <!-- Primary Actions -->
+      <div class="primary-actions">
+        <button class="primary-action-button" id="groupByTypeBtn">
+        <span class="action-icon">≡</span>
+          <span class="action-title">Group by Type</span>
+      </button>
+      
+        <button class="primary-action-button" id="groupByDomainBtn">
+        <span class="action-icon">⊞</span>
+          <span class="action-title">Group by Domain</span>
+        </button>
+        </div>
+      
+      <!-- Secondary Actions -->
+      <div class="secondary-actions">
+        <button class="secondary-action-button" id="ungroupAllBtn">
+          <span class="secondary-icon">⊟</span>
+          <span>Ungroup All</span>
+        </button>
+        <button class="secondary-action-button" id="newGroupBtn">
+          <span class="secondary-icon">+</span>
+          <span>New Group</span>
+        </button>
+        <button class="secondary-action-button" id="newDividerBtn" title="Creates a collapsed group as a visual divider. Keep it collapsed!">
+          <span class="secondary-icon">─</span>
+          <span>New Divider</span>
+        </button>
+        <button class="secondary-action-button" id="saveSessionBtn">
+          <span class="secondary-icon">↓</span>
+          <span>Save Session</span>
+      </button>
+        </div>
+        </div>
+
+    <!-- Tip Banner -->
+    <div class="tip-banner" id="tip-banner">
+      <div class="tip-icon">💡</div>
+      <div class="tip-content">
+        <strong>Tips:</strong>
+        <ul class="tip-list">
+          <li>Right-click any tab group to change its color, rename, or collapse it</li>
+          <li>Right-click individual tabs to move them between groups</li>
+          <li>Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> (or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> on Mac) to undo your last action</li>
+        </ul>
+        </div>
+      <button class="tip-close" id="dismiss-tip">×</button>
+    </div>
+
+    <!-- Active Groups Section -->
+    <section class="section">
+      <div class="section-header">
+      <h2 class="section-title">Active Groups</h2>
+        <div class="section-metadata" id="activeGroupsMetadata"></div>
+      </div>
+      <div class="section-content" id="activeGroups">
+        <div class="empty-state">
+          <div class="empty-state-text" id="emptyGroupsText"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved Sessions Section -->
+    <section class="section">
+      <h2 class="section-title">Saved Sessions</h2>
+      <div class="section-content sessions-content" id="savedSessions">
+        <div class="empty-state">
+          No saved sessions yet.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../utils/tabManager.js"></script>
+  <script src="../utils/tabClassifier.js"></script>
+  <script src="../utils/sessionManager.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
+
