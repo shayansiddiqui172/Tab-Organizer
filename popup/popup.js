@@ -1343,6 +1343,32 @@ async function initTabScrolling() {
     if (isEnabled) {
       await renderTabStrip();
     }
+
+    // Keyboard arrow navigation when hovering the tab strip
+    const tabStripContainer = section.querySelector('.tab-strip-container');
+    let tabStripHovered = false;
+    if (tabStripContainer) {
+      addTrackedEventListener(tabStripContainer, 'mouseenter', () => {
+        tabStripHovered = true;
+      });
+      addTrackedEventListener(tabStripContainer, 'mouseleave', () => {
+        tabStripHovered = false;
+      });
+
+      addTrackedEventListener(document, 'keydown', (e) => {
+        if (!tabStripHovered) return;
+        const key = e.key;
+        if (key === 'ArrowLeft') {
+          e.preventDefault();
+          tabStrip.scrollBy({ left: -120, behavior: 'smooth' });
+          updateScrollArrows(tabStrip, scrollLeftBtn, scrollRightBtn);
+        } else if (key === 'ArrowRight') {
+          e.preventDefault();
+          tabStrip.scrollBy({ left: 120, behavior: 'smooth' });
+          updateScrollArrows(tabStrip, scrollLeftBtn, scrollRightBtn);
+        }
+      });
+    }
   } catch (error) {
     console.error('[Popup] Error initializing tab scrolling:', error);
   }
