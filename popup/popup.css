@@ -215,7 +215,7 @@ a:focus-visible {
   background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
   border-radius: 12px;
   padding: 20px;
-  margin-bottom: 24px;
+  margin: 16px 24px 0 24px;
   color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   display: none;
@@ -1131,5 +1131,307 @@ kbd {
 
 .primary-action-button.success .action-icon {
   color: white;
+}
+
+/* ============================
+   Tab Scrolling Section
+   ============================ */
+
+.tab-scroll-section {
+  margin: 0;
+  padding: 18px 28px 10px 28px;
+  border-bottom: 1px solid var(--color-border-light);
+  background: transparent; /* make it blend with the popup */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 12px;
+  box-shadow: none; /* remove strong shadow to reduce noticeability */
+  position: relative;
+  z-index: 1;
+}
+
+.tab-scroll-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  min-height: 48px;
+}
+
+.tab-scroll-header-left {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tab-scroll-title {
+  font-size: 17.5px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  height: 28px;
+}
+
+.apple-toggle {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.apple-toggle input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.apple-toggle-slider {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  transition: background 0.3s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.apple-toggle-slider::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 17.5px;
+  height: 17.5px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  transition: transform 0.3s, background 0.3s;
+}
+
+.apple-toggle input:checked + .apple-toggle-slider {
+  background: var(--color-indigo);
+}
+
+.apple-toggle input:checked + .apple-toggle-slider::before {
+  transform: translateX(18px);
+  background: #fff;
+}
+
+.tab-scroll-section,
+.tab-scroll-section * {
+  transition: none !important;
+}
+
+.tab-scroll-body {
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  transition: grid-template-rows 300ms ease, opacity 300ms ease, padding-top 300ms ease !important;
+  padding-top: 10px;
+  opacity: 1;
+}
+
+.tab-scroll-body > * {
+  overflow: hidden;
+}
+
+.tab-scroll-section.collapsed .tab-scroll-body,
+.tab-scroll-body.disabled {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  padding-top: 0;
+}
+
+.tab-scroll-toggle-slider {
+  transition: background 200ms ease !important;
+}
+
+.tab-scroll-toggle-slider::before {
+  transition: transform 200ms ease !important;
+}
+
+.tab-strip-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tab-strip {
+  display: flex;
+  overflow-x: auto;
+  gap: 4px;
+  scroll-behavior: smooth;
+  flex: 1;
+  /* leave space at left/right so arrows sit outside the visible tabs */
+  margin: 0 44px;
+  padding: 4px 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tab-strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* Arrow buttons */
+.tab-strip-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease, background 150ms ease;
+}
+
+.tab-strip-arrow.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tab-strip-arrow:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.tab-strip-arrow-left {
+  left: 8px;
+}
+
+.tab-strip-arrow-right {
+  right: 8px;
+}
+
+/* Individual tab item in strip */
+.tab-strip-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* increased width so only ~3.5 tabs fit in the strip */
+  min-width: 110px;
+  max-width: 140px;
+  padding: 10px 8px;
+  /* top-rounded tab shape; bottom will be open with notches via pseudo-elements */
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  gap: 6px;
+  flex-shrink: 0;
+  transition: background 150ms ease, border-color 150ms ease !important;
+  position: relative; /* for notch pseudo-elements */
+  z-index: 2;
+  overflow: visible;
+  /* per-element tab bg variable so pseudo-elements can match */
+  --tab-bg: #F3F4F6;
+  background: var(--tab-bg);
+  border: 1px solid var(--color-border-medium);
+  border-bottom: none;
+}
+
+.tab-strip-item:hover {
+  background: var(--color-bg-hover);
+}
+
+.tab-strip-item.active {
+  --tab-bg: var(--color-indigo-light);
+  background: var(--tab-bg);
+  border-color: var(--color-indigo);
+}
+
+[data-theme="dark"] .tab-strip-item.active {
+  --tab-bg: rgba(129, 140, 248, 0.15);
+  background: var(--tab-bg);
+  border-color: var(--color-indigo);
+}
+
+/* pseudo-element notches removed per request */
+
+[data-theme="dark"] .tab-strip-item {
+  --tab-bg: rgba(255, 255, 255, 0.08);
+}
+
+.tab-strip-favicon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.tab-strip-favicon-fallback {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-hover);
+  flex-shrink: 0;
+}
+
+.tab-strip-title {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 64px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.tab-strip-item.active .tab-strip-title {
+  color: var(--color-indigo-dark);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .tab-strip-item.active .tab-strip-title {
+  color: var(--color-indigo);
+}
+
+/* Keyboard shortcut info line */
+.tab-scroll-shortcut-info {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-top: 8px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.tab-scroll-shortcut-info kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-family: inherit;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-medium);
+  border-radius: 4px;
+  box-shadow: 0 1px 0 var(--color-border-light);
+  line-height: 1.4;
+}
+
+.shortcut-note {
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 

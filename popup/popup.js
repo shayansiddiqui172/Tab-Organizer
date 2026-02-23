@@ -99,7 +99,7 @@ function formatTimestamp(timestamp) {
   const diff = now - timestamp;
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
+  const hours = Math.floor(minutes / 66);
   const days = Math.floor(hours / 24);
 
   if (days > 0) {
@@ -190,6 +190,7 @@ async function initPopup() {
   try {
     await applyTheme();
     await checkWelcomeStatus();
+    await initTabScrolling();
     await updateTabCount();
     await loadActiveGroups();
     await loadSavedSessions();
@@ -1243,6 +1244,256 @@ document.getElementById('dismiss-tip')?.addEventListener('click', async () => {
     }
   }
 });
+
+// ============================
+// Tab Scrolling Feature
+// ============================
+
+/**
+ * Initialize the tab scrolling section
+ * Reads saved state from storage, wires up toggle/collapse/scroll handlers
+ * @returns {Promise<void>}
+ */
+async function initTabScrolling() {
+  try {
+    const section = document.getElementById('tabScrollSection');
+    const toggle = document.getElementById('tabScrollToggle');
+    const body = document.getElementById('tabScrollBody');
+    const header = document.getElementById('tabScrollHeader');
+    const toggleLabel = document.getElementById('tabScrollToggleLabel');
+    const scrollLeftBtn = document.getElementById('scrollLeftBtn');
+    const scrollRightBtn = document.getElementById('scrollRightBtn');
+    const tabStrip = document.getElementById('tabStrip');
+
+    if (!section || !toggle || !body || !header) return;
+
+    // Read saved state
+    const { tabScrollEnabled, tabScrollCollapsed } = await chrome.storage.local.get([
+      'tabScrollEnabled',
+      'tabScrollCollapsed'
+    ]);
+
+    // Default enabled to false (off by default)
+    const isEnabled = tabScrollEnabled === true;
+    const isCollapsed = tabScrollCollapsed !== false;
+
+    toggle.checked = isEnabled;
+    if (isCollapsed) {
+      section.classList.add('collapsed');
+    } else {
+      section.classList.remove('collapsed');
+    }
+    if (!isEnabled) {
+      body.classList.add('disabled');
+    }
+
+    // Toggle handler
+    addTrackedEventListener(toggle, 'change', async (e) => {
+      e.stopPropagation(); // Prevent header click from firing
+      const enabled = toggle.checked;
+      try {
+        await chrome.storage.local.set({ tabScrollEnabled: enabled });
+      } catch (error) {
+        console.error('[Popup] Error saving tab scroll toggle:', error);
+      }
+      if (enabled) {
+        body.classList.remove('disabled');
+        // Auto-expand when enabling
+        section.classList.remove('collapsed');
+        await chrome.storage.local.set({ tabScrollCollapsed: false });
+        await renderTabStrip();
+      } else {
+        body.classList.add('disabled');
+      }
+    });
+
+    // Prevent toggle label click from bubbling to header
+    if (toggleLabel) {
+      addTrackedEventListener(toggleLabel, 'click', (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    // Collapse handler — entire header row is clickable
+    addTrackedEventListener(header, 'click', async () => {
+      section.classList.toggle('collapsed');
+      const collapsed = section.classList.contains('collapsed');
+      try {
+        await chrome.storage.local.set({ tabScrollCollapsed: collapsed });
+      } catch (error) {
+        console.error('[Popup] Error saving tab scroll collapse:', error);
+      }
+    });
+
+    // Scroll arrow handlers
+    addTrackedEventListener(scrollLeftBtn, 'click', () => {
+      tabStrip.scrollBy({ left: -150, behavior: 'smooth' });
+    });
+
+    addTrackedEventListener(scrollRightBtn, 'click', () => {
+      tabStrip.scrollBy({ left: 150, behavior: 'smooth' });
+    });
+
+    // Update arrow visibility on scroll
+    addTrackedEventListener(tabStrip, 'scroll', () => {
+      updateScrollArrows(tabStrip, scrollLeftBtn, scrollRightBtn);
+    });
+
+    // Render if enabled and not collapsed
+    if (isEnabled) {
+      await renderTabStrip();
+    }
+  } catch (error) {
+    console.error('[Popup] Error initializing tab scrolling:', error);
+  }
+}
+
+/**
+ * Show or hide scroll arrow buttons based on scroll position
+ * @param {HTMLElement} strip - The tab strip element
+ * @param {HTMLElement} leftBtn - Left arrow button
+ * @param {HTMLElement} rightBtn - Right arrow button
+ */
+function updateScrollArrows(strip, leftBtn, rightBtn) {
+  const scrollLeft = strip.scrollLeft;
+  const maxScroll = strip.scrollWidth - strip.clientWidth;
+
+  if (scrollLeft > 4) {
+    leftBtn.classList.add('visible');
+  } else {
+    leftBtn.classList.remove('visible');
+  }
+
+  if (maxScroll - scrollLeft > 4) {
+    rightBtn.classList.add('visible');
+  } else {
+    rightBtn.classList.remove('visible');
+  }
+}
+
+/**
+ * Render the horizontal tab strip with all tabs in the current window
+ * @returns {Promise<void>}
+ */
+async function renderTabStrip() {
+  const tabStrip = document.getElementById('tabStrip');
+  const scrollLeftBtn = document.getElementById('scrollLeftBtn');
+  const scrollRightBtn = document.getElementById('scrollRightBtn');
+
+  if (!tabStrip) return;
+
+  try {
+    const tabs = await chrome.tabs.query({ currentWindow: true });
+
+    // Clear existing items
+    tabStrip.innerHTML = '';
+
+    for (const tab of tabs) {
+      const item = createTabStripItem(tab);
+      tabStrip.appendChild(item);
+    }
+
+    // Scroll active tab into view
+    const activeItem = tabStrip.querySelector('.tab-strip-item.active');
+    if (activeItem) {
+      // Use requestAnimationFrame to ensure layout is computed
+      requestAnimationFrame(() => {
+        activeItem.scrollIntoView({ inline: 'center', behavior: 'instant' });
+        // Update arrows after scroll
+        setTimeout(() => {
+          updateScrollArrows(tabStrip, scrollLeftBtn, scrollRightBtn);
+        }, 50);
+      });
+    } else {
+      updateScrollArrows(tabStrip, scrollLeftBtn, scrollRightBtn);
+    }
+  } catch (error) {
+    console.error('[Popup] Error rendering tab strip:', error);
+  }
+}
+
+/**
+ * Create a single tab item element for the tab strip
+ * Uses safe DOM methods (no innerHTML with user data)
+ * @param {chrome.tabs.Tab} tab - Chrome tab object
+ * @returns {HTMLElement} Tab strip item element
+ */
+function createTabStripItem(tab) {
+  const item = document.createElement('div');
+  item.className = 'tab-strip-item';
+  if (tab.active) {
+    item.classList.add('active');
+  }
+  item.title = tab.title || '';
+
+  // Favicon
+  if (tab.favIconUrl && !tab.favIconUrl.startsWith('chrome://')) {
+    const img = document.createElement('img');
+    img.className = 'tab-strip-favicon';
+    img.src = tab.favIconUrl;
+    img.alt = '';
+    img.loading = 'lazy';
+    img.addEventListener('error', () => {
+      // Replace broken image with fallback
+      const fallback = createFaviconFallback();
+      img.replaceWith(fallback);
+    });
+    item.appendChild(img);
+  } else {
+    item.appendChild(createFaviconFallback());
+  }
+
+  // Title
+  const titleSpan = document.createElement('span');
+  titleSpan.className = 'tab-strip-title';
+  titleSpan.textContent = sanitizeText(tab.title || 'New Tab');
+  item.appendChild(titleSpan);
+
+  // Click to switch tab
+  addTrackedEventListener(item, 'click', () => {
+    switchToTab(tab.id, item);
+  });
+
+  return item;
+}
+
+/**
+ * Create a fallback icon element when favicon is unavailable
+ * @returns {HTMLElement} Fallback element
+ */
+function createFaviconFallback() {
+  const fallback = document.createElement('div');
+  fallback.className = 'tab-strip-favicon-fallback';
+  fallback.textContent = '⊙';
+  return fallback;
+}
+
+/**
+ * Switch to a tab and update the active highlight in the strip
+ * @param {number} tabId - Chrome tab ID
+ * @param {HTMLElement} clickedItem - The clicked tab strip item element
+ */
+async function switchToTab(tabId, clickedItem) {
+  try {
+    // Update active highlight immediately for visual feedback
+    const tabStrip = document.getElementById('tabStrip');
+    if (tabStrip) {
+      const currentActive = tabStrip.querySelector('.tab-strip-item.active');
+      if (currentActive) {
+        currentActive.classList.remove('active');
+      }
+      clickedItem.classList.add('active');
+      clickedItem.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+    }
+
+    // Brief delay so the user sees the highlight before the popup closes
+    await new Promise(resolve => setTimeout(resolve, 150));
+    await chrome.tabs.update(tabId, { active: true });
+  } catch (error) {
+    console.error('[Popup] Error switching tab:', error);
+    showToast('Could not switch to tab', 'error');
+  }
+}
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
