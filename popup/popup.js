@@ -188,6 +188,15 @@ function showLoadingState(container) {
  */
 async function initPopup() {
   try {
+    // Initialize i18n for elements with data-i18n
+    try {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = chrome.i18n.getMessage(el.dataset.i18n);
+      });
+    } catch (e) {
+      // Fail silently if i18n isn't available in this context
+      console.warn('[Popup] i18n init failed', e);
+    }
     await applyTheme();
     await checkWelcomeStatus();
     await initTabScrolling();

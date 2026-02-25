@@ -3,6 +3,7 @@
   "name": "Tab-it",
   "short_name": "Tab-it",
   "version": "1.0.0",
+  "default_locale": "en",
   "author": "Shayan Siddiqui",
   "description": "Organize 100+ tabs instantly. Smart grouping, session management, crash recovery. Stay focused and clutter-free.",
   "content_security_policy": {
